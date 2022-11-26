@@ -19,28 +19,44 @@ def input_students
 
   students = []
   name = gets.chomp
+  puts "Please enter their hobby"
+  hobby = gets.chomp
  
   while !name.empty? do
-    students << {name: name, cohort: :november}
+    students << {name: name, cohort: :november, hobby: hobby}
+    if students.count == 1
+    puts "Now we have #{students.count} student"
+    else
     puts "Now we have #{students.count} students"
+    end
     name = gets.chomp
+    if name != ""
+      puts "Please enter their hobby"
+      hobby = gets.chomp
+    else
+      break
+    end
   end
   students
 end
 
 def print_header
   puts "The students of Villians Academy"
-  puts "------------------"
+  puts "------------------".center(30)
 end
 
 def print(students)
   students.each_with_index do |student, index|
-    puts "#{index+1}. #{student[:name]} (#{student[:cohort]} cohort)"
+    puts "#{index+1}. #{student[:name]} (#{student[:cohort]} cohort, hobby: #{student[:hobby]})".center(40)
   end
 end
 
 def print_footer(students)
-  puts "Overall, we have #{students.count} great students!"
+  if students.count >= 1
+    puts "Overall, we have #{students.count} great students!"
+  else
+    exit
+  end
 end
 
 students = input_students
