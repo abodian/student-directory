@@ -5,9 +5,9 @@ def input_students
   puts "Please enter the names of the students"
   puts "To finish, just hit return twice"
 
-  name = gets.chomp
+  name = STDIN.gets.chomp
   puts "Please enter their hobby"
-  hobby = gets.chomp
+  hobby = STDIN.gets.chomp
  
   while !name.empty? do
     @students << {name: name, cohort: :november, hobby: hobby}
@@ -16,10 +16,10 @@ def input_students
     else
     puts "Now we have #{@students.count} students"
     end
-    name = gets.chomp
+    name = STDIN.gets.chomp
     if name != ""
       puts "Please enter their hobby"
-      hobby = gets.chomp
+      hobby = STDIN.gets.chomp
     else
       break
     end
@@ -28,7 +28,7 @@ end
 
 def print_header
   puts "The students of Villians Academy"
-  puts "------------------".center(30)
+  puts "------------------"
 end
 
 def print_students_list
@@ -48,7 +48,7 @@ end
 def interactive_menu
   loop do
     print_menu
-    process(gets.chomp)
+    process(STDIN.gets.chomp)
   end
 end
 
@@ -88,20 +88,32 @@ def save_students
   file = File.open("students.csv", "w")
   # iterate over the array of students
   @students.each do |student|
-    student_data = [student[:name], student[:cohort]]
+    student_data = [student[:name], student[:cohort], student[:hobby]]
     csv_line = student_data.join(",")
     file.puts csv_line
   end
   file.close
 end
 
-def load_students
-  file = File.open("students.csv", "r")
+def load_students(filename = "students.csv")
+  file = File.open(filename, "r")
   file.readlines.each do |line|
-  name, cohort = line.chomp.split(',')
-    @students << {name: name, cohort: cohort.to_sym}
+  name, cohort, hobby = line.chomp.split(',')
+    @students << {name: name, cohort: cohort.to_sym, hobby: hobby.to_sym}
   end
   file.close
+end
+
+def try_load_students
+  filename = ARGV.first
+  return if filename.nil? # get out of hte method if it isn't given
+  if File.exist?(filename) # if it exists
+    load_students(filename)
+      puts "Loaded #{@students.count} from #{filename}"
+  else # if it doesn't exist
+    puts "Sorry, #{filename} doesn't exist."
+    exit
+  end
 end
 
 interactive_menu
